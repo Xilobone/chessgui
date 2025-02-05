@@ -1,5 +1,4 @@
-﻿using chess;
-using gui;
+﻿using gui;
 public class Progam
 {
     public static void Main(string[] args)
