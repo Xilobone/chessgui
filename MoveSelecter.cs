@@ -10,8 +10,8 @@ namespace gui
         private int selectedFrom = -1;
         private int selectedTo = -1;
 
-        public EventHandler<MoveEvent> onMove;
-        public EventHandler<MoveSelectionEvent> onMoveSelectionChange;
+        public EventHandler<MoveEvent>? onMove;
+        public EventHandler<MoveSelectionEvent>? onMoveSelectionChange;
         public MoveSelecter(GUI gui)
         {
             this.gui = gui;
@@ -58,7 +58,7 @@ namespace gui
             {
                 if (move.toIndex == selectedTo)
                 {
-                    onMove.Invoke(this, new MoveEvent(move));
+                    onMove?.Invoke(this, new MoveEvent(move));
                     selectedFrom = -1;
                     selectedTo = -1;
                     onMoveSelectionChange?.Invoke(this, new MoveSelectionEvent(selectedFrom, selectedTo));

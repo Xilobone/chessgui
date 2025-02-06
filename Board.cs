@@ -74,7 +74,6 @@ namespace gui
         {
                 int y = index / 8;
                 int x = index % 8;
-                Console.WriteLine("filling rectangle");
                 g.FillRectangle(new SolidBrush(color), BOARD_OFFSET[0] + SQUARE_SIZE * x, BOARD_OFFSET[1] + SQUARE_SIZE * (7 - y), SQUARE_SIZE, SQUARE_SIZE);
         }
 
@@ -140,6 +139,11 @@ namespace gui
         internal void onMoveSelectionChange(object? sender, MoveSelecter.MoveSelectionEvent e)
         {
             selectedIndex = e.fr;
+        }
+
+        internal void OnChange(object? sender, ChessEventArgs e)
+        {
+            board = e.board;
         }
     }
 }
