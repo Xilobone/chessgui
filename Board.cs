@@ -5,8 +5,8 @@ namespace gui
 {
     public class Board
     {
-        private static readonly int[] BOARD_OFFSET = [64, 64];
-        private static readonly int SQUARE_SIZE = 64;
+        public static readonly int[] BOARD_OFFSET = [64, 64];
+        public static readonly int SQUARE_SIZE = 64;
 
         private static Dictionary<int, int> IMAGE_INDEX = new Dictionary<int, int>() {
             {Piece.WHITE_KING, 0},
@@ -33,7 +33,9 @@ namespace gui
 
         private ulong bitboard;
 
-        private chess.Board? board;
+        private int selectedIndex = -1;
+
+        public chess.Board? board;
         public Board() : this(null) {}
 
         public Board(chess.Board? board)
@@ -63,7 +65,17 @@ namespace gui
             darkBrush.Dispose();
 
             DrawBitboard(g);
+
+            if (selectedIndex != -1) DrawSquare(g, selectedIndex, Color.Yellow);
             DrawPieces(g);
+        }
+
+        private void DrawSquare(Graphics g, int index, Color color)
+        {
+                int y = index / 8;
+                int x = index % 8;
+                Console.WriteLine("filling rectangle");
+                g.FillRectangle(new SolidBrush(color), BOARD_OFFSET[0] + SQUARE_SIZE * x, BOARD_OFFSET[1] + SQUARE_SIZE * (7 - y), SQUARE_SIZE, SQUARE_SIZE);
         }
 
         private void DrawBitboard(Graphics g)
@@ -120,11 +132,14 @@ namespace gui
             }
         }
 
-        public void OnChange(object? sender, ChessEventArgs e)
+        public void OnChange(object? sender, ChessPlayer.ChessPlayerEvent e)
         {
             board = e.board;
-            // UpdateBitboard();
-            // Refresh();
+        }
+
+        internal void onMoveSelectionChange(object? sender, MoveSelecter.MoveSelectionEvent e)
+        {
+            selectedIndex = e.fr;
         }
     }
 }
