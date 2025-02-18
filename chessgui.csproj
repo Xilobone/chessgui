@@ -9,7 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
   <Reference Include="chess">
-    <HintPath>..\chess\bin\Debug\net9.0-windows\chess.dll</HintPath>
+    <HintPath>..\chess\bin\Debug\net9.0\chess.dll</HintPath>
   </Reference>
 </ItemGroup>
 

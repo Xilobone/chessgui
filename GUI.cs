@@ -9,27 +9,25 @@ namespace gui
         public Board board;
         private MoveSelecter moveSelecter;
 
-        private Button button;
-
         private ComboBox whitePlayerSelect;
         private ComboBox blackPlayerSelect;
 
         private chessPlayer.ChessPlayer? player;
 
         private Thread? chessThread;
-        public static GUI Create()
-        {
-            GUI gui = new GUI();
+        // public static GUI Create()
+        // {
+        //     GUI gui = new GUI();
 
-            new Thread(() =>
-                {
-                    Application.EnableVisualStyles();
-                    Application.SetCompatibleTextRenderingDefault(false);
-                    Application.Run(gui);
-                }).Start();
+        //     new Thread(() =>
+        //         {
+        //             Application.EnableVisualStyles();
+        //             Application.SetCompatibleTextRenderingDefault(false);
+        //             Application.Run(gui);
+        //         }).Start();
 
-            return gui;
-        }
+        //     return gui;
+        // }
 
         public GUI()
         {
@@ -44,10 +42,15 @@ namespace gui
             Text = "Chess GUI";
             Size = new Size(1920, 1080);
 
-            button = new Button();
-            button.Text = "New Game";
-            button.Click += OnClick;
-            Controls.Add(button);
+            MenuStrip menuStrip = new MenuStrip();
+            ToolStripMenuItem newGame = new ToolStripMenuItem("New game");
+            newGame.Click += OnClick;
+            menuStrip.Items.Add(newGame);
+            ToolStripMenuItem changeSettings = new ToolStripMenuItem("Change settings");
+            changeSettings.Click += OnChangeSettings;
+            menuStrip.Items.Add(changeSettings);
+            MainMenuStrip = menuStrip;
+            Controls.Add(menuStrip);
 
             whitePlayerSelect = new ComboBox();
             whitePlayerSelect.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -74,6 +77,12 @@ namespace gui
             blackPlayerSelect.DisplayMember = "name";
             blackPlayerSelect.Location = new Point(750, 100);
             Controls.Add(blackPlayerSelect);
+        }
+
+        private void OnChangeSettings(object? sender, EventArgs e)
+        {
+            new SettingsDialog().ShowDialog();
+            // new OpenFileDialog();
         }
 
         private void OnChange(object? sender, MoveSelecter.MoveSelectionEvent e)
@@ -105,16 +114,9 @@ namespace gui
             Invalidate();
         }
 
-        private void OnChange(object? sender, ChessPlayer.ChessPlayerEvent e)
-        {
-            Invalidate();
-        }
-
         private void OnMoveMade(object? sender, MoveSelecter.MoveEvent e)
         {
             if (player == null) return;
-
-            // player.makeMove(e.move);
         }
 
         protected override void OnPaint(PaintEventArgs e)
