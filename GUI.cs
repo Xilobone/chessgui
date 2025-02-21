@@ -15,19 +15,6 @@ namespace gui
         private chessPlayer.ChessPlayer? player;
 
         private Thread? chessThread;
-        // public static GUI Create()
-        // {
-        //     GUI gui = new GUI();
-
-        //     new Thread(() =>
-        //         {
-        //             Application.EnableVisualStyles();
-        //             Application.SetCompatibleTextRenderingDefault(false);
-        //             Application.Run(gui);
-        //         }).Start();
-
-        //     return gui;
-        // }
 
         public GUI()
         {
@@ -91,11 +78,16 @@ namespace gui
         }
 
         private void OnClick(object? sender, EventArgs e)
-        {   
-            if (chessThread != null && chessThread.IsAlive)
-            {
-                // chessThread.Interrupt();
-            }
+        {
+            if (chessThread != null && chessThread.IsAlive && player != null)
+            {   
+                //no longer listen to old chess player updates and stop running old player
+                player.onChange -= OnChange;
+                player.onChange -= board.OnChange;
+                player.Stop();
+            }  
+
+            //create new chess player
             player = new chessPlayer.ChessPlayer((chess.Player)whitePlayerSelect.SelectedItem!, (chess.Player)blackPlayerSelect.SelectedItem!);
             player.onChange += OnChange;
             player.onChange += board.OnChange;

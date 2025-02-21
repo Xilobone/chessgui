@@ -71,10 +71,6 @@ namespace gui
 
         private void OpenFileButton_Click(object? sender, EventArgs e)
         {
-            // Create an OpenFileDialog instance
-            Console.WriteLine("opening file dialog");
-
-
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
             openFileDialog.Filter = "Text Files|*.txt|All Files|*.*";
