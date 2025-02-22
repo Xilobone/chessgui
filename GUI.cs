@@ -12,7 +12,7 @@ namespace gui
         private ComboBox whitePlayerSelect;
         private ComboBox blackPlayerSelect;
 
-        private chessPlayer.ChessPlayer? player;
+        private ChessPlayer? player;
 
         private Thread? chessThread;
 
@@ -29,13 +29,8 @@ namespace gui
             Text = "Chess GUI";
             Size = new Size(1920, 1080);
 
-            MenuStrip menuStrip = new MenuStrip();
-            ToolStripMenuItem newGame = new ToolStripMenuItem("New game");
-            newGame.Click += OnClick;
-            menuStrip.Items.Add(newGame);
-            ToolStripMenuItem changeSettings = new ToolStripMenuItem("Change settings");
-            changeSettings.Click += OnChangeSettings;
-            menuStrip.Items.Add(changeSettings);
+            //add the menu strip
+            GUIMenuStrip menuStrip = new GUIMenuStrip(this);
             MainMenuStrip = menuStrip;
             Controls.Add(menuStrip);
 
@@ -48,9 +43,9 @@ namespace gui
             moveSelecter.onMove += white.OnMove;
             whitePlayers[0] = new chess.Player("gui player", white, new player.Evaluator());
 
-            for(int i = 0; i < PlayerList.whitePlayers.Length; i++)
+            for (int i = 0; i < PlayerList.whitePlayers.Length; i++)
             {
-                whitePlayers[i+1] = PlayerList.whitePlayers[i];
+                whitePlayers[i + 1] = PlayerList.whitePlayers[i];
             }
 
             whitePlayerSelect.DataSource = whitePlayers;
@@ -66,29 +61,17 @@ namespace gui
             Controls.Add(blackPlayerSelect);
         }
 
-        private void OnChangeSettings(object? sender, EventArgs e)
-        {
-            new SettingsDialog().ShowDialog();
-            // new OpenFileDialog();
-        }
-
         private void OnChange(object? sender, MoveSelecter.MoveSelectionEvent e)
         {
             Invalidate();
         }
 
-        private void OnClick(object? sender, EventArgs e)
+        public void StartGame()
         {
-            if (chessThread != null && chessThread.IsAlive && player != null)
-            {   
-                //no longer listen to old chess player updates and stop running old player
-                player.onChange -= OnChange;
-                player.onChange -= board.OnChange;
-                player.Stop();
-            }  
+            StopGame();
 
             //create new chess player
-            player = new chessPlayer.ChessPlayer((chess.Player)whitePlayerSelect.SelectedItem!, (chess.Player)blackPlayerSelect.SelectedItem!);
+            player = new ChessPlayer((chess.Player)whitePlayerSelect.SelectedItem!, (chess.Player)blackPlayerSelect.SelectedItem!);
             player.onChange += OnChange;
             player.onChange += board.OnChange;
             chessThread = new Thread(() =>
@@ -99,6 +82,19 @@ namespace gui
 
             chessThread.IsBackground = true;
             chessThread.Start();
+        }
+
+        public void StopGame()
+        {
+            if (chessThread == null || !chessThread.IsAlive || player == null)
+            {
+                return;
+            }
+
+            //no longer listen to old chess player updates and stop running old player
+            player.onChange -= OnChange;
+            player.onChange -= board.OnChange;
+            player.Stop();
         }
 
         private void OnChange(object? sender, ChessEventArgs e)

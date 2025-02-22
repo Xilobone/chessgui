@@ -1,3 +1,4 @@
+using System.Drawing.Imaging.Effects;
 using chess;
 using chessPlayer;
 
@@ -27,8 +28,8 @@ namespace gui
 
         private Image image;
 
-        private Color light = Color.FromArgb(219, 198, 140);
-        private Color dark = Color.FromArgb(128, 100, 25);
+
+        // private Color dark = Color.FromArgb(128, 100, 25);
         private Color bitboardColor = Color.FromArgb(255, 10, 10);
 
         private ulong bitboard;
@@ -36,7 +37,7 @@ namespace gui
         private int selectedIndex = -1;
 
         public chess.Board? board;
-        public Board() : this(null) {}
+        public Board() : this(null) { }
 
         public Board(chess.Board? board)
         {
@@ -48,6 +49,8 @@ namespace gui
         public void Draw(Graphics g)
         {
             //draw board
+            Color light = (Color)new ColorConverter().ConvertFromString(GUISettings.SETTINGS.lightColor)!;
+            Color dark = (Color)new ColorConverter().ConvertFromString(GUISettings.SETTINGS.darkColor)!;
             Brush lightBrush = new SolidBrush(light);
             Brush darkBrush = new SolidBrush(dark);
 
@@ -64,6 +67,26 @@ namespace gui
             lightBrush.Dispose();
             darkBrush.Dispose();
 
+            if (GUISettings.SETTINGS.showFilesAndRanks)
+            {
+                Font font = new Font("Arial", 12, FontStyle.Regular);
+                Brush brush = Brushes.Black;
+                //show files
+                for (int file = 0; file < 8; file++)
+                {
+                    char f = (char)('a' + file);
+                    g.DrawString(f.ToString(), font, brush, new Point((int)(BOARD_OFFSET[0] + SQUARE_SIZE * (file + 0.5)), BOARD_OFFSET[1] + SQUARE_SIZE * 8));
+                }
+
+                //show ranks
+                for (int rank = 0; rank < 8; rank++)
+                {
+                    int r = 8 - rank;
+                    g.DrawString(r.ToString(), font, brush, new Point(BOARD_OFFSET[0] - 16, (int)(BOARD_OFFSET[0] + SQUARE_SIZE * (rank + 0.5))));
+
+                }
+            }
+
             DrawBitboard(g);
 
             if (selectedIndex != -1) DrawSquare(g, selectedIndex, Color.Yellow);
@@ -72,9 +95,9 @@ namespace gui
 
         private void DrawSquare(Graphics g, int index, Color color)
         {
-                int y = index / 8;
-                int x = index % 8;
-                g.FillRectangle(new SolidBrush(color), BOARD_OFFSET[0] + SQUARE_SIZE * x, BOARD_OFFSET[1] + SQUARE_SIZE * (7 - y), SQUARE_SIZE, SQUARE_SIZE);
+            int y = index / 8;
+            int x = index % 8;
+            g.FillRectangle(new SolidBrush(color), BOARD_OFFSET[0] + SQUARE_SIZE * x, BOARD_OFFSET[1] + SQUARE_SIZE * (7 - y), SQUARE_SIZE, SQUARE_SIZE);
         }
 
         private void DrawBitboard(Graphics g)
@@ -129,11 +152,6 @@ namespace gui
 
                 }
             }
-        }
-
-        public void OnChange(object? sender, ChessPlayer.ChessPlayerEvent e)
-        {
-            board = e.board;
         }
 
         internal void onMoveSelectionChange(object? sender, MoveSelecter.MoveSelectionEvent e)
