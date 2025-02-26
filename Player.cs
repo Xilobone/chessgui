@@ -2,7 +2,7 @@ using chess;
 
 namespace gui
 {
-    public class Player : chess.Engine
+    public class Player : chess.engine.Engine
     {
         Move? selectedMove;
         public Player(bool isWhite, IEvaluator evaluator) : base(isWhite, evaluator)
