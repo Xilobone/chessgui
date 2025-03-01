@@ -1,10 +1,17 @@
 using chessPlayer;
 
 namespace gui
-{
+{   
+    /// <summary>
+    /// Represents the settings dialog where chess player settings can be viewed and changed
+    /// </summary>
     public class SettingsDialog : Form
     {
         private ChessPlayerSettings settings;
+
+        /// <summary>
+        /// Creates a new chess settings dialog window
+        /// </summary>
         public SettingsDialog()
         {
             Size = new Size(300, 400);

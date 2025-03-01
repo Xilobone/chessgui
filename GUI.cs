@@ -17,6 +17,7 @@ namespace gui
 
         private ComboBox whitePlayerSelect;
         private ComboBox blackPlayerSelect;
+        private Label fenLabel;
 
         private ChessPlayer? player;
 
@@ -66,6 +67,11 @@ namespace gui
             blackPlayerSelect.DisplayMember = "name";
             blackPlayerSelect.Location = new Point(750, 100);
             Controls.Add(blackPlayerSelect);
+
+            fenLabel = new Label();
+            fenLabel.Size = new Size(600, 50);
+            fenLabel.Location = new Point(Board.BOARD_OFFSET[0], Board.BOARD_OFFSET[1] + 8 * Board.SQUARE_SIZE + 16);
+            Controls.Add(fenLabel);
         }
 
         private void OnChange(object? sender, MoveSelecter.MoveSelectionEvent e)
@@ -112,6 +118,7 @@ namespace gui
 
         private void OnChange(object? sender, ChessEventArgs e)
         {
+            fenLabel.Text = e.board.toFen();
             Invalidate();
         }
 

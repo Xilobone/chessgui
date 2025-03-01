@@ -1,8 +1,15 @@
 namespace gui
 {
+    /// <summary>
+    /// Represents a dialog window where gui settings can be viewed and changed
+    /// </summary>
     public class GUISettingsDialog : Form
     {
         private GUISettings settings;
+
+        /// <summary>
+        /// Creates a new gui settings dialog window
+        /// </summary>
         public GUISettingsDialog()
         {
             Size = new Size(300, 400);

@@ -1,12 +1,26 @@
-using System.Drawing.Imaging.Effects;
 using chess;
 using chessPlayer;
 
 namespace gui
 {
+    /// <summary>
+    /// Class that represents the visible board on the gui
+    /// </summary>
     public class Board
     {
+        /// <summary>
+        /// The chessboard that is currently shown
+        /// </summary>
+        public chess.Board? board;
+
+        /// <summary>
+        /// The x and y offset (in pixels) of the board relative to the top left corner of the screen
+        /// </summary>
         public static readonly int[] BOARD_OFFSET = [64, 64];
+
+        /// <summary>
+        /// The size (in pixels) of each of the squares of the board
+        /// </summary>
         public static readonly int SQUARE_SIZE = 64;
 
         private static Dictionary<int, int> IMAGE_INDEX = new Dictionary<int, int>() {
@@ -28,17 +42,19 @@ namespace gui
 
         private Image image;
 
-
-        // private Color dark = Color.FromArgb(128, 100, 25);
-        private Color bitboardColor = Color.FromArgb(255, 10, 10);
-
-        private ulong bitboard;
-
         private int selectedIndex = -1;
 
-        public chess.Board? board;
+        // private ulong bitboard;
+
+        /// <summary>
+        /// Creates a new board object
+        /// </summary>
         public Board() : this(null) { }
 
+        /// <summary>
+        /// Creates a new board object, that stores a chessboard
+        /// </summary>
+        /// <param name="board">The chess board to show</param>
         public Board(chess.Board? board)
         {
             this.board = board;
@@ -46,6 +62,10 @@ namespace gui
             image = Image.FromFile($"{AppDomain.CurrentDomain.BaseDirectory}/../../../lib/chess_pieces.png");
         }
 
+        /// <summary>
+        /// Draws the board, pieces, files, ranks and highlighted squares on the gui
+        /// </summary>
+        /// <param name="g">The graphics object to use for drawing</param>
         public void Draw(Graphics g)
         {
             //draw board
@@ -87,7 +107,7 @@ namespace gui
                 }
             }
 
-            DrawBitboard(g);
+            // DrawBitboard(g);
 
             if (selectedIndex != -1) DrawSquare(g, selectedIndex, Color.Yellow);
             DrawPieces(g);
@@ -100,30 +120,29 @@ namespace gui
             g.FillRectangle(new SolidBrush(color), BOARD_OFFSET[0] + SQUARE_SIZE * x, BOARD_OFFSET[1] + SQUARE_SIZE * (7 - y), SQUARE_SIZE, SQUARE_SIZE);
         }
 
-        private void DrawBitboard(Graphics g)
-        {
-            Brush brush = new SolidBrush(bitboardColor);
-            ulong btb = bitboard;
+        // private void DrawBitboard(Graphics g)
+        // {
+        //     Brush brush = new SolidBrush(bitboardColor);
+        //     ulong btb = bitboard;
 
-            for (int i = 0; i < 64; i++)
-            {
-                bool isAttacking = (btb & 1) == 1;
-                btb >>= 1;
+        //     for (int i = 0; i < 64; i++)
+        //     {
+        //         bool isAttacking = (btb & 1) == 1;
+        //         btb >>= 1;
 
-                if (!isAttacking)
-                {
-                    continue;
-                }
+        //         if (!isAttacking)
+        //         {
+        //             continue;
+        //         }
 
-                int y = i / 8;
-                int x = i % 8;
+        //         int y = i / 8;
+        //         int x = i % 8;
 
-                g.FillRectangle(brush, BOARD_OFFSET[0] + SQUARE_SIZE * x, BOARD_OFFSET[1] + SQUARE_SIZE * (7 - y), SQUARE_SIZE, SQUARE_SIZE);
+        //         g.FillRectangle(brush, BOARD_OFFSET[0] + SQUARE_SIZE * x, BOARD_OFFSET[1] + SQUARE_SIZE * (7 - y), SQUARE_SIZE, SQUARE_SIZE);
 
-            }
+        //     }
+        // }
 
-
-        }
         private void DrawPieces(Graphics g)
         {
             if (board == null)
@@ -135,7 +154,7 @@ namespace gui
             {
                 for (int y = 0; y < 8; y++)
                 {
-                    int piece = board.getPiece(new Position(x, y));
+                    int piece = board.getPiece(x + 8 * y);
                     if (piece == Piece.EMPTY)
                     {
                         continue;

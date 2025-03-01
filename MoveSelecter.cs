@@ -73,9 +73,9 @@ namespace gui
 
             foreach (Move move in moves)
             {
-                if (move.toIndex == selectedTo)
+                if (move.to == selectedTo)
                 {
-                    bool isWhite = Piece.isWhite(gui.board.board.getPiece(move.frIndex));
+                    bool isWhite = Piece.isWhite(gui.board.board.getPiece(move.fr));
                     onMove?.Invoke(this, new MoveEvent(move, isWhite));
                     selectedFrom = -1;
                     selectedTo = -1;
