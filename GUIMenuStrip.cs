@@ -1,9 +1,17 @@
 
 namespace gui
 {
+    /// <summary>
+    /// Class containing all elements and logic of the gui menu strip
+    /// </summary>
     public class GUIMenuStrip : MenuStrip
     {
         private GUI gui;
+
+        /// <summary>
+        /// Creates a new gui menu strip object
+        /// </summary>
+        /// <param name="gui">The gui to attatch the menu strip to</param>
         public GUIMenuStrip(GUI gui) : base()
         {
             this.gui = gui;

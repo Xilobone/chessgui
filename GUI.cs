@@ -3,9 +3,15 @@ using chessPlayer;
 
 namespace gui
 {
+    /// <summary>
+    /// The main gui window of the application
+    /// </summary>
     public class GUI : Form
     {
-
+        
+        /// <summary>
+        /// The current board that is being displayed on the gui
+        /// </summary>
         public Board board;
         private MoveSelecter moveSelecter;
 
@@ -16,6 +22,9 @@ namespace gui
 
         private Thread? chessThread;
 
+        /// <summary>
+        /// Creates a new GUI window
+        /// </summary>
         public GUI()
         {
             board = new Board();
@@ -37,21 +46,19 @@ namespace gui
             whitePlayerSelect = new ComboBox();
             whitePlayerSelect.DropDownStyle = ComboBoxStyle.DropDownList;
 
-            chess.Player[] whitePlayers = new chess.Player[PlayerList.whitePlayers.Length + 1];
 
-            Player white = new Player(true, new player.Evaluator());
+            Player white = new Player(true);
             moveSelecter.onMove += white.OnMove;
-            whitePlayers[0] = new chess.Player("gui player", white, new player.Evaluator());
+            PlayerList.whitePlayers[0] = new chess.Player("gui player", white, new player.Evaluator());
 
-            for (int i = 0; i < PlayerList.whitePlayers.Length; i++)
-            {
-                whitePlayers[i + 1] = PlayerList.whitePlayers[i];
-            }
-
-            whitePlayerSelect.DataSource = whitePlayers;
+            whitePlayerSelect.DataSource = PlayerList.whitePlayers;
             whitePlayerSelect.DisplayMember = "name";
             whitePlayerSelect.Location = new Point(600, 100);
             Controls.Add(whitePlayerSelect);
+
+            Player black = new Player(false);
+            moveSelecter.onMove += black.OnMove;
+            PlayerList.blackPlayers[0] = new chess.Player("gui player", black, new player.Evaluator());
 
             blackPlayerSelect = new ComboBox();
             blackPlayerSelect.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -66,6 +73,9 @@ namespace gui
             Invalidate();
         }
 
+        /// <summary>
+        /// Starts a new game of chess with the selected players, stops any previously running games, if any
+        /// </summary>
         public void StartGame()
         {
             StopGame();
@@ -84,6 +94,9 @@ namespace gui
             chessThread.Start();
         }
 
+        /// <summary>
+        /// Stops the currently running game, if any
+        /// </summary>
         public void StopGame()
         {
             if (chessThread == null || !chessThread.IsAlive || player == null)
@@ -107,6 +120,10 @@ namespace gui
             if (player == null) return;
         }
 
+        /// <summary>
+        /// Draws the graphics on the screen, also updates the displayed board
+        /// </summary>
+        /// <param name="e">The paint event arguments to use</param>
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
