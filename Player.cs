@@ -12,6 +12,11 @@ namespace gui
         /// <summary>
         /// Creates a new player
         /// </summary>
+        public Player() : this(true) { }
+
+        /// <summary>
+        /// Creates a new player
+        /// </summary>
         /// <param name="isWhite">True if the player plays as white, false if it plays as black</param>
         public Player(bool isWhite) : base(isWhite, new player.Evaluator()) { }
 
@@ -26,8 +31,6 @@ namespace gui
             {
                 Thread.Sleep(100);
             }
-
-            Console.WriteLine("making move");
 
             Move move = selectedMove;
             selectedMove = null;

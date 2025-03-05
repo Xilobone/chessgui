@@ -44,7 +44,6 @@ namespace gui
 
         private void OnSave(object? sender, EventArgs e)
         {
-            // settings.maxTurnTime = 123456;
             ChessPlayerSettings.writeAsDefault(settings);
             Close();
         }

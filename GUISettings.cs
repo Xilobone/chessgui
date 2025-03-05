@@ -26,6 +26,17 @@ namespace gui
         public string darkColor { get; set; }
 
         /// <summary>
+        /// The color to highlight the currently selected square with
+        /// </summary>
+        public string selectedColor { get; set; }
+
+        /// <summary>
+        /// The color to highlight the last move with
+        /// </summary>
+        public string lastMoveColor { get; set; }
+
+
+        /// <summary>
         /// True if the files and ranks are shown, false if they are not shown
         /// </summary>
         public bool showFilesAndRanks { get; set; }
@@ -37,6 +48,8 @@ namespace gui
         {
             lightColor = "";
             darkColor = "";
+            selectedColor = "";
+            lastMoveColor = "";
             showFilesAndRanks = false;
         }
 

@@ -44,6 +44,7 @@ namespace gui
 
         private int selectedIndex = -1;
 
+        private int[] lastMoveIndexes;
         // private ulong bitboard;
 
         /// <summary>
@@ -58,7 +59,7 @@ namespace gui
         public Board(chess.Board? board)
         {
             this.board = board;
-
+            lastMoveIndexes = [-1, -1];
             image = Image.FromFile($"{AppDomain.CurrentDomain.BaseDirectory}/../../../lib/chess_pieces.png");
         }
 
@@ -74,15 +75,21 @@ namespace gui
             Brush lightBrush = new SolidBrush(light);
             Brush darkBrush = new SolidBrush(dark);
 
-            for (int x = 0; x < 8; x++)
+            for (int i = 0; i < 64; i++)
             {
-                for (int y = 0; y < 8; y++)
-                {
-                    Brush brush = (x + y) % 2 == 0 ? lightBrush : darkBrush;
-
-                    g.FillRectangle(brush, BOARD_OFFSET[0] + SQUARE_SIZE * x, BOARD_OFFSET[1] + SQUARE_SIZE * y, SQUARE_SIZE, SQUARE_SIZE);
-                }
+                string colorHex = ((i / 8) + (i % 8)) % 2 != 0 ? GUISettings.SETTINGS.lightColor : GUISettings.SETTINGS.darkColor;
+                DrawSquare(g, i, colorHex);
             }
+            // for (int x = 0; x < 8; x++)
+            //     {
+            //         for (int y = 0; y < 8; y++)
+            //         {
+            //             DrawSquare
+            //             Brush brush = (x + y) % 2 == 0 ? lightBrush : darkBrush;
+
+            //             g.FillRectangle(brush, BOARD_OFFSET[0] + SQUARE_SIZE * x, BOARD_OFFSET[1] + SQUARE_SIZE * y, SQUARE_SIZE, SQUARE_SIZE);
+            //         }
+            //     }
 
             lightBrush.Dispose();
             darkBrush.Dispose();
@@ -107,14 +114,26 @@ namespace gui
                 }
             }
 
-            // DrawBitboard(g);
+            //draw last move
+            DrawSquare(g, lastMoveIndexes[0], GUISettings.SETTINGS.lastMoveColor, 128);
+            DrawSquare(g, lastMoveIndexes[1], GUISettings.SETTINGS.lastMoveColor, 128);
 
-            if (selectedIndex != -1) DrawSquare(g, selectedIndex, Color.Yellow);
+            //draw selected index
+            DrawSquare(g, selectedIndex, GUISettings.SETTINGS.selectedColor, 128);
             DrawPieces(g);
         }
 
-        private void DrawSquare(Graphics g, int index, Color color)
+        private void DrawSquare(Graphics g, int index, string colorHex)
         {
+            DrawSquare(g, index, colorHex, 255);
+        }
+
+        private void DrawSquare(Graphics g, int index, string colorHex, byte opacity)
+        {
+            if (index == -1) return;
+
+            Color color = (Color)new ColorConverter().ConvertFromString(colorHex)!;
+            color = Color.FromArgb(opacity, color);
             int y = index / 8;
             int x = index % 8;
             g.FillRectangle(new SolidBrush(color), BOARD_OFFSET[0] + SQUARE_SIZE * x, BOARD_OFFSET[1] + SQUARE_SIZE * (7 - y), SQUARE_SIZE, SQUARE_SIZE);
@@ -181,6 +200,11 @@ namespace gui
         internal void OnChange(object? sender, ChessEventArgs e)
         {
             board = e.board;
+
+            lastMoveIndexes = e.lastMove != null ? [e.lastMove.fr, e.lastMove.to] : [-1, -1];
+
+
         }
+
     }
 }

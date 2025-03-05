@@ -8,17 +8,23 @@ namespace gui
     /// </summary>
     public class GUI : Form
     {
-        
+
         /// <summary>
         /// The current board that is being displayed on the gui
         /// </summary>
         public Board board;
-        private MoveSelecter moveSelecter;
 
-        private ComboBox whitePlayerSelect;
-        private ComboBox blackPlayerSelect;
-        private Label fenLabel;
+        /// <summary>
+        /// Responsible for listening to move selection on the board
+        /// </summary>
+        public MoveSelecter moveSelecter;
 
+        // private ComboBox whitePlayerSelect;
+        // private ComboBox blackPlayerSelect;
+        private Label infoLabel;
+        private TextBox fenLabel;
+
+        private NewGamePanel newGamePanel;
         private ChessPlayer? player;
 
         private Thread? chessThread;
@@ -27,7 +33,8 @@ namespace gui
         /// Creates a new GUI window
         /// </summary>
         public GUI()
-        {
+        {   
+            BackColor = Color.FromArgb(235, 223, 196);
             board = new Board();
             moveSelecter = new MoveSelecter(this);
             moveSelecter.onMove += OnMoveMade;
@@ -44,31 +51,20 @@ namespace gui
             MainMenuStrip = menuStrip;
             Controls.Add(menuStrip);
 
-            whitePlayerSelect = new ComboBox();
-            whitePlayerSelect.DropDownStyle = ComboBoxStyle.DropDownList;
+            //add new game panel
+            newGamePanel = new NewGamePanel(this);
+            newGamePanel.Location = new Point(600, 100);
+            Controls.Add(newGamePanel);
 
+            //add info label
+            infoLabel = new Label();
+            infoLabel.Location = new Point(newGamePanel.Location.X, newGamePanel.Location.Y + newGamePanel.Size.Height + 8);
+            infoLabel.Size = new Size(newGamePanel.Size.Width, 128);
+            infoLabel.BackColor = Color.Blue;
+            Controls.Add(infoLabel);
 
-            Player white = new Player(true);
-            moveSelecter.onMove += white.OnMove;
-            PlayerList.whitePlayers[0] = new chess.Player("gui player", white, new player.Evaluator());
-
-            whitePlayerSelect.DataSource = PlayerList.whitePlayers;
-            whitePlayerSelect.DisplayMember = "name";
-            whitePlayerSelect.Location = new Point(600, 100);
-            Controls.Add(whitePlayerSelect);
-
-            Player black = new Player(false);
-            moveSelecter.onMove += black.OnMove;
-            PlayerList.blackPlayers[0] = new chess.Player("gui player", black, new player.Evaluator());
-
-            blackPlayerSelect = new ComboBox();
-            blackPlayerSelect.DropDownStyle = ComboBoxStyle.DropDownList;
-            blackPlayerSelect.DataSource = PlayerList.blackPlayers;
-            blackPlayerSelect.DisplayMember = "name";
-            blackPlayerSelect.Location = new Point(750, 100);
-            Controls.Add(blackPlayerSelect);
-
-            fenLabel = new Label();
+            fenLabel = new TextBox();
+            fenLabel.ReadOnly = true;
             fenLabel.Size = new Size(600, 50);
             fenLabel.Location = new Point(Board.BOARD_OFFSET[0], Board.BOARD_OFFSET[1] + 8 * Board.SQUARE_SIZE + 16);
             Controls.Add(fenLabel);
@@ -87,7 +83,7 @@ namespace gui
             StopGame();
 
             //create new chess player
-            player = new ChessPlayer((chess.Player)whitePlayerSelect.SelectedItem!, (chess.Player)blackPlayerSelect.SelectedItem!);
+            player = new ChessPlayer((IPlayer)newGamePanel.whitePlayerSelect.SelectedItem!, (IPlayer)newGamePanel.blackPlayerSelect.SelectedItem!);
             player.onChange += OnChange;
             player.onChange += board.OnChange;
             chessThread = new Thread(() =>
@@ -119,6 +115,9 @@ namespace gui
         private void OnChange(object? sender, ChessEventArgs e)
         {
             fenLabel.Text = e.board.toFen();
+            string playerToMove = e.board.whiteToMove ? "white" : "black";
+            infoLabel.Text = $"{playerToMove} to move";
+
             Invalidate();
         }
 

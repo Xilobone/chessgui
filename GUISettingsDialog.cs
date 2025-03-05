@@ -17,7 +17,9 @@ namespace gui
 
             showSetting("lightColor", settings.lightColor, 0);
             showSetting("darkColor", settings.darkColor, 1);
-            showSetting("showFilesAndRanks", 2);
+            showSetting("selectedColor", settings.selectedColor, 2);
+            showSetting("lastMoveColor", settings.lastMoveColor, 3);
+            showSetting("showFilesAndRanks", 4);
 
             Button save = new Button();
             save.Text = "Save changes";
